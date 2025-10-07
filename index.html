@@ -451,6 +451,23 @@
         const checkBtn = document.getElementById('checkBtn');
         const resultContainer = document.getElementById('resultContainer');
 
+        // Function to generate consistent score for username
+        function generateConsistentScore(username) {
+            // Simple hash function to generate consistent number from string
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) {
+                const char = username.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            
+            // Use absolute value and map to 85-100 range for high scores
+            const absHash = Math.abs(hash);
+            const score = 85 + (absHash % 16); // Generates scores between 85-100
+            
+            return score;
+        }
+
         checkBtn.addEventListener('click', checkActivity);
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') checkActivity();
@@ -471,18 +488,11 @@
             checkBtn.disabled = true;
             checkBtn.innerHTML = '<span class="loader"></span>Checking...';
 
-            // Simulate API call with random results
+            // Simulate API call with consistent results
             setTimeout(() => {
-                let score;
-                
-                // Special handling for your username
-                if (username.toLowerCase() === '0xqowiyy') {
-                    score = Math.floor(Math.random() * 11) + 90; // 90-100
-                } else {
-                    score = Math.floor(Math.random() * 51) + 50; // 50-100
-                }
-                
-                const isActive = score >= 70;
+                // Generate consistent score based on username
+                const score = generateConsistentScore(username.toLowerCase());
+                const isActive = score >= 70; // Will always be true since scores are 85-100
                 
                 showResult(username, isActive, score);
                 
