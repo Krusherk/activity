@@ -461,11 +461,22 @@
                 hash = hash & hash; // Convert to 32bit integer
             }
             
-            // Use absolute value and map to 85-100 range for high scores
+            // Use absolute value
             const absHash = Math.abs(hash);
-            const score = 85 + (absHash % 16); // Generates scores between 85-100
             
-            return score;
+            // 60% chance to be active (score >= 70)
+            // Check if hash mod 100 is less than 60 for 60% probability
+            const isLucky = (absHash % 100) < 60;
+            
+            if (isLucky) {
+                // Active users: scores between 70-89
+                const score = 70 + (absHash % 20);
+                return score;
+            } else {
+                // Inactive users: scores between 35-69
+                const score = 35 + (absHash % 35);
+                return score;
+            }
         }
 
         checkBtn.addEventListener('click', checkActivity);
